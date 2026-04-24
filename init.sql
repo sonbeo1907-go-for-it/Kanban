@@ -124,6 +124,9 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO users (username, password, full_name, role_id, is_deleted)
+SELECT 'admin', '$2a$10$rWt9Pk.wASKhld24qcQS0uuto6s6eeqv0VVtENg32Cixhl8Bf5u7', 'System Administrator', 1, 0
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE username = 'admin');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
