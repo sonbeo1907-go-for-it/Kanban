@@ -13,6 +13,10 @@ import java.sql.SQLException;
 @WebListener
 public class DatabaseInitializer implements ServletContextListener {
 
+    static {
+        System.out.println("DatabaseInitializer class loaded");
+    }
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         createDefaultAdmin();
