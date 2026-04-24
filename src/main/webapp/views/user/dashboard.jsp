@@ -54,7 +54,7 @@
 
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="mb-0">My Board</h4>
+        <h4 class="mb-0">Công Việc Của Tôi</h4>
         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addTaskModal">
             <i class="bi bi-plus-lg"></i> Thêm Task
         </button>
