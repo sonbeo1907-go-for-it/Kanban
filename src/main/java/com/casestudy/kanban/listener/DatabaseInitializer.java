@@ -1,3 +1,4 @@
+/*
 package com.casestudy.kanban.listener;
 
 import com.casestudy.kanban.util.DBContext;
@@ -32,7 +33,7 @@ public class DatabaseInitializer implements ServletContextListener {
                 String adminUsername = "admin";
                 String adminPassword = System.getenv("DEFAULT_ADMIN_PASSWORD");
                 if (adminPassword == null || adminPassword.trim().isEmpty()) {
-                    adminPassword = "admin123"; // fallback, nhưng nên cảnh báo log
+                    adminPassword = "admin123";
                     System.err.println("WARNING: Using default admin password 'admin123'. Please set env DEFAULT_ADMIN_PASSWORD for production.");
                 }
                 String hashedPassword = BCrypt.hashpw(adminPassword, BCrypt.gensalt());
@@ -67,3 +68,4 @@ public class DatabaseInitializer implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent sce) {
     }
 }
+*/
