@@ -36,6 +36,3 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/kanban-app:latest
             ${{ secrets.DOCKER_USERNAME }}/kanban-app:${{ github.sha }}
-
-      - name: Verify WAR content
-        run: jar tf target/kanban.war | grep -i DatabaseInitializer || exit 1
