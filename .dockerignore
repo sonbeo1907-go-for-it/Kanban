@@ -5,3 +5,4 @@
 key.txt
 db_app_password.txt
 db_root_password.txt
+!/target/kanban.war
