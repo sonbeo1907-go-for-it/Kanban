@@ -2,31 +2,58 @@ version: '3.8'
 
 services:
   db:
-    image: mysql:8.0
+    image: ${MYSQL_IMAGE}
     container_name: kanban-mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: kanban
+      MYSQL_ROOT_PASSWORD_FILE: ${DB_ROOT_PASSWORD_PATH}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD_FILE: ${DB_APP_PASSWORD_PATH}
     ports:
-      - "3307:3306"
+      - "${DB_HOST_PORT}:${DB_CONTAINER_PORT}"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - mysql_data:/var/lib/mysql
+    secrets:
+      - db_root_password
+      - db_app_password
+    networks:
+      - kanban-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$(cat /run/secrets/db_root_password)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   app:
-    image: sonbeo1907/kanban-app:latest
+    image: ${APP_IMAGE}
     container_name: kanban-web-app
     ports:
-      - "8080:8080"
+      - "${APP_HOST_PORT}:${APP_CONTAINER_PORT}"
     depends_on:
-      - db 
+      db:
+        condition: service_healthy
     environment:
-      - DB_SERVER=db 
-      - DB_PORT=3306
-      - DB_NAME=kanban
-      - DB_USER=root
-      - DB_PASS=rootpassword
+      - DB_SERVER=db
+      - DB_PORT=${DB_CONTAINER_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD_FILE=${DB_APP_PASSWORD_PATH}
+    secrets:
+      - db_app_password
+    networks:
+      - kanban-network
+
+networks:
+  kanban-network:
+    driver: bridge
+
+secrets:
+  db_root_password:
+    file: ./db_root_password.txt
+  db_app_password:
+    file: ./db_app_password.txt
 
 volumes:
   mysql_data:

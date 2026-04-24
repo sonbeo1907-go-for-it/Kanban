@@ -36,11 +36,3 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/kanban-app:latest
             ${{ secrets.DOCKER_USERNAME }}/kanban-app:${{ github.sha }}
-
-      - name: Test Secret Visibility
-        run: |
-          if [ -z "${{ secrets.DOCKER_USERNAME }}" ]; then
-            echo "Secret is EMPTY"
-          else
-            echo "Secret is FOUND"
-          fi
