@@ -23,7 +23,6 @@ jobs:
         with:
           context: .
           push: true
-
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/kanban-app:latest
             ${{ secrets.DOCKER_USERNAME }}/kanban-app:${{ github.sha }}
