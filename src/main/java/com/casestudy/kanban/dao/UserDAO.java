@@ -11,7 +11,7 @@ import java.sql.SQLException;
 public class UserDAO {
 
     public User login(String username, String password) {
-        String query = "SELECT * FROM users WHERE username = ? AND is_deleted = 0";
+        String query = "SELECT * FROM users WHERE username = ? AND is_deleted = false";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, username);
@@ -54,7 +54,7 @@ public class UserDAO {
             return false;
         }
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-        String query = "INSERT INTO users (username, password, full_name, role_id, is_deleted) VALUES (?, ?, ?, 2, 0)";
+        String query = "INSERT INTO users (username, password, full_name, role_id, is_deleted) VALUES (?, ?, ?, 2, false)";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, username);

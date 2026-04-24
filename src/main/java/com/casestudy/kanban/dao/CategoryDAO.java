@@ -12,14 +12,14 @@ import java.util.List;
 public class CategoryDAO {
     private static final Logger logger = LoggerFactory.getLogger(CategoryDAO.class);
 
-    private static final String SELECT_PAGINATED = "SELECT * FROM categories WHERE is_deleted = 0 LIMIT ? OFFSET ?";
-    private static final String SELECT_ALL = "SELECT * FROM categories WHERE is_deleted = 0";
-    private static final String COUNT_ALL = "SELECT COUNT(*) FROM categories WHERE is_deleted = 0";
-    private static final String INSERT = "INSERT INTO categories (name, is_deleted) VALUES (?, 0)";
-    private static final String DELETE = "UPDATE categories SET is_deleted = 1 WHERE id = ?";
-    private static final String SELECT_BY_NAME = "SELECT * FROM categories WHERE name = ? AND is_deleted = 0";
-    private static final String SELECT_SEARCH_PAGINATED = "SELECT * FROM categories WHERE is_deleted = 0 AND name LIKE ? LIMIT ? OFFSET ?";
-    private static final String COUNT_SEARCH = "SELECT COUNT(*) FROM categories WHERE is_deleted = 0 AND name LIKE ?";
+    private static final String SELECT_PAGINATED = "SELECT * FROM categories WHERE is_deleted = false LIMIT ? OFFSET ?";
+    private static final String SELECT_ALL = "SELECT * FROM categories WHERE is_deleted = false";
+    private static final String COUNT_ALL = "SELECT COUNT(*) FROM categories WHERE is_deleted = false";
+    private static final String INSERT = "INSERT INTO categories (name, is_deleted) VALUES (?, false)";
+    private static final String DELETE = "UPDATE categories SET is_deleted = true WHERE id = ?";
+    private static final String SELECT_BY_NAME = "SELECT * FROM categories WHERE name = ? AND is_deleted = false";
+    private static final String SELECT_SEARCH_PAGINATED = "SELECT * FROM categories WHERE is_deleted = false AND name LIKE ? LIMIT ? OFFSET ?";
+    private static final String COUNT_SEARCH = "SELECT COUNT(*) FROM categories WHERE is_deleted = false AND name LIKE ?";
 
     public List<Category> findAll(int limit, int offset) {
         List<Category> list = new ArrayList<>();

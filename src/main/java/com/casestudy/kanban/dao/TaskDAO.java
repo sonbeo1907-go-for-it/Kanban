@@ -17,7 +17,7 @@ public class TaskDAO {
     private static final String SELECT_BASE =
             "SELECT t.*, c.name as category_name FROM tasks t " +
             "JOIN categories c ON t.category_id = c.id " +
-            "WHERE t.user_id = ? AND t.is_deleted = 0 ";
+            "WHERE t.user_id = ? AND t.is_deleted = false ";
 
     public List<Task> findByUser(int userId, String search, int categoryId, boolean hideOldDone) {
         List<Task> list = new ArrayList<>();
@@ -35,7 +35,7 @@ public class TaskDAO {
             sql.append("AND t.category_id = ? ");
         }
         if (hideOldDone) {
-            sql.append("AND NOT (t.status = 3 AND t.created_at < DATE_SUB(NOW(), INTERVAL 7 DAY)) ");
+            sql.append("AND NOT (t.status = 3 AND t.created_at < NOW() - INTERVAL '7 days') ");
         }
         sql.append("ORDER BY t.created_at DESC");
 
@@ -80,7 +80,7 @@ public class TaskDAO {
         }
 
         String sql = "INSERT INTO tasks (title, description, status, user_id, category_id, is_deleted, created_at) " +
-                     "VALUES (?, ?, ?, ?, ?, 0, NOW())";
+                     "VALUES (?, ?, ?, ?, ?, false, NOW())";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, task.getTitle().trim());
@@ -146,7 +146,6 @@ public class TaskDAO {
             logger.warn("Invalid taskId or userId for status update: taskId={}, userId={}", taskId, userId);
             return false;
         }
-        // Validate status range (1: pending, 2: in progress, 3: done, etc.)
         if (newStatus < 1 || newStatus > 3) {
             logger.warn("Invalid status value: {}", newStatus);
             return false;
@@ -176,7 +175,7 @@ public class TaskDAO {
             return false;
         }
 
-        String sql = "UPDATE tasks SET is_deleted = 1 WHERE id = ? AND user_id = ?";
+        String sql = "UPDATE tasks SET is_deleted = true WHERE id = ? AND user_id = ?";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, taskId);
