@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: kanban-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: kanban
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_data:/var/lib/mysql
+
+  app:
+    image: sonbeo1907/kanban-app:v1.1 
+    container_name: kanban-web-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db 
+    environment:
+      - DB_SERVER=db 
+      - DB_PORT=3306
+      - DB_NAME=kanban
+      - DB_USER=root
+      - DB_PASS=rootpassword
+
+volumes:
+  mysql_data:
