@@ -3,10 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0"
-         metadata-complete="false">
+         metadata-complete="true">
     <display-name>Kanban Application</display-name>
-    
-    <listener>
-        <listener-class>com.casestudy.kanban.listener.DatabaseInitializer</listener-class>
-    </listener>
 </web-app>
