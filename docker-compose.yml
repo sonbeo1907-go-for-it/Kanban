@@ -15,7 +15,7 @@ services:
       - mysql_data:/var/lib/mysql
 
   app:
-    image: sonbeo1907/kanban-app:v1.1 
+    image: sonbeo1907/kanban-app:latest
     container_name: kanban-web-app
     ports:
       - "8080:8080"
