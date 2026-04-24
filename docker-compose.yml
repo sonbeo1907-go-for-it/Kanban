@@ -40,6 +40,7 @@ services:
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASSWORD_FILE=${DB_APP_PASSWORD_PATH}
+      - DEFAULT_ADMIN_PASSWORD=${DEFAULT_ADMIN_PASSWORD}
     secrets:
       - db_app_password
     networks:

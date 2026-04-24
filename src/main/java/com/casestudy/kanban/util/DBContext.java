@@ -1,42 +1,67 @@
 package com.casestudy.kanban.util;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class DBContext {
-    private final String serverName = getEnvOrDefault("DB_SERVER", "localhost");
-    private final String dbName = getEnvOrDefault("DB_NAME", "kanban");
-    private final String portNumber = getEnvOrDefault("DB_PORT", "3306");
-    private final String userID = getEnvOrDefault("DB_USER", "root");
-    private final String password = getEnvOrDefault("DB_PASS", "rootpassword");
+    private static final HikariDataSource dataSource;
 
+    static {
+        String server = requireEnv("DB_SERVER");
+        String port = requireEnv("DB_PORT");
+        String dbName = requireEnv("DB_NAME");
+        String user = requireEnv("DB_USER");
 
-    private String getEnvOrDefault(String key, String defaultValue) {
-        String value = System.getenv(key);
-        return (value != null && !value.isEmpty()) ? value : defaultValue;
-    }
-
-    public Connection getConnection() throws Exception {
-        String url = "jdbc:mysql://" + serverName + ":" + portNumber + "/" + dbName 
-                     + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+        String password = readPasswordFromEnv();
         
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        return DriverManager.getConnection(url, userID, password);
+        String jdbcUrl = "jdbc:mysql://" + server + ":" + port + "/" + dbName
+                + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(jdbcUrl);
+        config.setUsername(user);
+        config.setPassword(password);
+        config.setMaximumPoolSize(10);
+        config.setMinimumIdle(2);
+        config.setConnectionTimeout(30000);
+        config.setIdleTimeout(600000);
+        config.setPoolName("KanbanHikariPool");
+        
+        dataSource = new HikariDataSource(config);
     }
 
-    public static void main(String[] args) {
-        try {
-            DBContext db = new DBContext();
-            Connection conn = db.getConnection();
-            if (conn != null) {
-                System.out.println("--- KẾT NỐI DATABASE THÀNH CÔNG ---");
-                System.out.println("URL: " + conn.getMetaData().getURL());
-                System.out.println("User: " + conn.getMetaData().getUserName());
-                conn.close();
-            }
-        } catch (Exception e) {
-            System.err.println("!!! LỖI KẾT NỐI: " + e.getMessage());
-            e.printStackTrace();
+    private static String requireEnv(String key) {
+        String value = System.getenv(key);
+        if (value == null || value.trim().isEmpty()) {
+            throw new IllegalStateException("Missing required environment variable: " + key);
         }
+        return value;
+    }
+
+    private static String readPasswordFromEnv() {
+        String passwordFilePath = System.getenv("DB_PASSWORD_FILE");
+        if (passwordFilePath != null && !passwordFilePath.trim().isEmpty()) {
+            try {
+                return Files.readString(Paths.get(passwordFilePath)).trim();
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to read password file: " + passwordFilePath, e);
+            }
+        }
+        
+        String plainPassword = System.getenv("DB_PASS");
+        if (plainPassword != null && !plainPassword.trim().isEmpty()) {
+            return plainPassword;
+        }
+        
+        throw new IllegalStateException("Neither DB_PASSWORD_FILE nor DB_PASS is set");
+    }
+
+    public static Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 }

@@ -1,6 +1,7 @@
 package com.casestudy.kanban.controller;
 
 import java.io.IOException;
+import com.casestudy.kanban.dao.UserDAO;
 import com.casestudy.kanban.model.User;
 import com.casestudy.kanban.service.IUserService;
 import com.casestudy.kanban.service.impl.UserServiceImpl;
@@ -14,7 +15,13 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet(urlPatterns = {"/user-auth", ""})
 public class UserController extends HttpServlet {
     
-    private IUserService userService = new UserServiceImpl();
+    private IUserService userService;
+
+    @Override
+    public void init() throws ServletException {
+        UserDAO userDAO = new UserDAO();
+        userService = new UserServiceImpl(userDAO);
+    }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
@@ -28,10 +35,10 @@ public class UserController extends HttpServlet {
 
         switch (action) {
             case "login-page":
-                request.getRequestDispatcher("/views/common/login.jsp").forward(request, response);
+                request.getRequestDispatcher("/WEB-INF/views/common/login.jsp").forward(request, response);
                 break;
             case "register-page":
-                request.getRequestDispatcher("/views/common/register.jsp").forward(request, response);
+                request.getRequestDispatcher("/WEB-INF/views/common/register.jsp").forward(request, response);
                 break;
             case "logout":
                 HttpSession session = request.getSession(false);
@@ -63,19 +70,31 @@ public class UserController extends HttpServlet {
         String user = request.getParameter("username");
         String pass = request.getParameter("password");
 
-        User account = userService.login(user, pass);
-        if (account != null) {
-            HttpSession session = request.getSession();
-            session.setAttribute("currentUser", account);
-            
-            if (account.getRoleId() == 1) {
-                response.sendRedirect(contextPath + "/admin-category?action=list");
+        if (user == null || user.trim().isEmpty() || pass == null || pass.trim().isEmpty()) {
+            request.setAttribute("error", "Tên đăng nhập và mật khẩu không được để trống!");
+            request.getRequestDispatcher("/WEB-INF/views/common/login.jsp").forward(request, response);
+            return;
+        }
+
+        try {
+            User account = userService.login(user.trim(), pass);
+            if (account != null) {
+                HttpSession session = request.getSession();
+                session.setAttribute("currentUser", account);
+                
+                if (account.getRoleId() == 1) {
+                    response.sendRedirect(contextPath + "/admin-category?action=list");
+                } else {
+                    response.sendRedirect(contextPath + "/user-dashboard?action=list");
+                }
             } else {
-                response.sendRedirect(contextPath + "/user-dashboard?action=list");
+                request.setAttribute("error", "Sai tài khoản hoặc mật khẩu!");
+                request.getRequestDispatcher("/WEB-INF/views/common/login.jsp").forward(request, response);
             }
-        } else {
-            request.setAttribute("error", "Sai tài khoản hoặc mật khẩu!");
-            request.getRequestDispatcher("/views/common/login.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace(); 
+            request.setAttribute("error", "Hệ thống đang gặp sự cố, vui lòng thử lại sau!");
+            request.getRequestDispatcher("/WEB-INF/views/common/login.jsp").forward(request, response);
         }
     }
 
@@ -86,26 +105,42 @@ public class UserController extends HttpServlet {
         String rePass = request.getParameter("repassword");
         String fullName = request.getParameter("fullName");
 
-        if (user == null || user.isEmpty() || pass == null || pass.isEmpty()) {
-            request.setAttribute("error", "Vui lòng điền đầy đủ thông tin!");
-            request.getRequestDispatcher("/views/common/register.jsp").forward(request, response);
+        // Kiểm tra nhập liệu cơ bản
+        if (user == null || user.trim().isEmpty()) {
+            request.setAttribute("error", "Tên đăng nhập không được để trống!");
+            request.getRequestDispatcher("/WEB-INF/views/common/register.jsp").forward(request, response);
             return;
         }
-
+        if (pass == null || pass.trim().isEmpty()) {
+            request.setAttribute("error", "Mật khẩu không được để trống!");
+            request.getRequestDispatcher("/WEB-INF/views/common/register.jsp").forward(request, response);
+            return;
+        }
+        if (pass.length() < 6) {
+            request.setAttribute("error", "Mật khẩu phải có ít nhất 6 ký tự!");
+            request.getRequestDispatcher("/WEB-INF/views/common/register.jsp").forward(request, response);
+            return;
+        }
         if (!pass.equals(rePass)) {
             request.setAttribute("error", "Mật khẩu nhập lại không khớp!");
-            request.getRequestDispatcher("/views/common/register.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/common/register.jsp").forward(request, response);
             return;
         }
 
-        boolean isSuccess = userService.register(user, pass, fullName);
-
-        if (isSuccess) {
-            request.setAttribute("message", "Đăng ký thành công! Vui lòng đăng nhập.");
-            request.getRequestDispatcher("/views/common/login.jsp").forward(request, response);
-        } else {
-            request.setAttribute("error", "Tài khoản đã tồn tại hoặc có lỗi xảy ra!");
-            request.getRequestDispatcher("/views/common/register.jsp").forward(request, response);
+        try {
+            boolean isSuccess = userService.register(user.trim(), pass, fullName != null ? fullName.trim() : "");
+            if (isSuccess) {
+                request.setAttribute("message", "Đăng ký thành công! Vui lòng đăng nhập.");
+                request.getRequestDispatcher("/WEB-INF/views/common/login.jsp").forward(request, response);
+            } else {
+                request.setAttribute("error", "Tài khoản đã tồn tại!");
+                request.getRequestDispatcher("/WEB-INF/views/common/register.jsp").forward(request, response);
+            }
+        } catch (Exception e) {
+            // Lỗi hệ thống
+            e.printStackTrace();
+            request.setAttribute("error", "Đăng ký thất bại do lỗi hệ thống, vui lòng thử lại sau!");
+            request.getRequestDispatcher("/WEB-INF/views/common/register.jsp").forward(request, response);
         }
     }
 }
