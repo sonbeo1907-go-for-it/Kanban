@@ -19,6 +19,7 @@ public class DatabaseInitializer implements ServletContextListener {
     }
 
     private void createDefaultAdmin() {
+        System.out.println("=== DatabaseInitializer started, checking users table...");
         String checkQuery = "SELECT COUNT(*) FROM users";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(checkQuery);
