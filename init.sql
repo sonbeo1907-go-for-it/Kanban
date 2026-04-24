@@ -125,7 +125,7 @@ CREATE TABLE `users` (
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` (`username`, `password`, `full_name`, `role_id`, `is_deleted`) VALUES
-('admin', '$2a$10$rWt9Pk.wASKhld24qcQS0uuto6s6eeqv0VVtENg32Cixhl8Bf5u7', 'System Administrator', 1, 0)
+('admin', '$2a$12$F5TdZQxrveZBCSh5xk67RuTZFP0dKt3hTLZzoo8fMrQDTjdXY2TJi', 'System Administrator', 1, 0)
 ON DUPLICATE KEY UPDATE `id` = `id`;
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
