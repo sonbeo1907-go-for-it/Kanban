@@ -18,7 +18,7 @@
     </properties>
 
     <dependencies>
-        <!-- Servlet API -->
+        <!-- Servlet API (provided by Tomcat) -->
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
@@ -52,11 +52,19 @@
             <version>5.1.0</version>
         </dependency>
 
-        <!-- Simple SLF4J implementation (log ra console, có thể thay bằng logback) -->
+        <!-- SLF4J API (HikariCP cần) -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.36</version>
+        </dependency>
+
+        <!-- SLF4J Simple Implementation (log ra console) -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.36</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- JUnit Test -->
@@ -67,6 +75,7 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- BCrypt for password hashing -->
         <dependency>
             <groupId>org.mindrot</groupId>
             <artifactId>jbcrypt</artifactId>
@@ -94,21 +103,4 @@
             </plugin>
         </plugins>
     </build>
-
-
-    <dependencyManagement>
-    
-
-        <dependencies>
-        
-
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>1.7.36</version>
-            </dependency>
-
-        </dependencies>
-
-    </dependencyManagement>
 </project>
