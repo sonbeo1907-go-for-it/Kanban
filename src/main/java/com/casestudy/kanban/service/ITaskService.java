@@ -6,11 +6,11 @@ import java.util.List;
 public interface ITaskService {
     List<Task> findByUser(int userId, String search, int categoryId, boolean hideOldDone);
     
-    void add(Task task);
+    boolean add(Task task);
     
-    void update(Task task);
+    boolean update(Task task);
     
-    void updateStatus(int taskId, int newStatus, int userId);
+    boolean updateStatus(int taskId, int newStatus, int userId);
     
-    void delete(int taskId, int userId);
+    boolean delete(int taskId, int userId);
 }

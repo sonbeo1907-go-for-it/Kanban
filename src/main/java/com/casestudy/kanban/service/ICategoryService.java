@@ -6,8 +6,8 @@ public interface ICategoryService {
     List<Category> findAll();
     List<Category> findAll(int page, int size);
     int getTotalPages(int size);
-    void save(Category category);
-    void delete(int id);
+    boolean save(Category category);
+    boolean delete(int id);
     Category findByName(String name);
     List<Category> search(String keyword, int limit, int offset);
     int getTotalCategories(String keyword);

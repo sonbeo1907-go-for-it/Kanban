@@ -1,6 +1,5 @@
 package com.casestudy.kanban.listener;
 
-import com.casestudy.kanban.dao.UserDAO;
 import com.casestudy.kanban.util.DBContext;
 import org.mindrot.jbcrypt.BCrypt;
 import jakarta.servlet.ServletContextEvent;
