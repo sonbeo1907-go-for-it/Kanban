@@ -38,7 +38,7 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/kanban-app:${{ github.sha }}
 
   deploy:
-    needs: test-and-build
+    needs: build-and-push
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Render deploy
