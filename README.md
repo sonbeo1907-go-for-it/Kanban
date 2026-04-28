@@ -99,6 +99,7 @@ Kanban/
 ├── docker-compose.yml
 ├── Dockerfile
 ├── init.sql
+├── init_postgres.sql
 ├── pom.xml
 └── README.md
 ```
