@@ -45,7 +45,7 @@ cd Kanban
 Tạo hai file trong cùng thư mục với docker-compose.yml:
 - db_root_password.txt – chứa mật khẩu root của PostgreSQL
 - db_app_password.txt – chứa mật khẩu của user kanban_user
-- 
+
 ### 3. Cấu hình biến môi trường
 Copy .env.example thành .env (nếu chưa có) hoặc sửa trực tiếp.
 
