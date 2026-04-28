@@ -84,7 +84,7 @@ Kanban/
 │   │   │   ├── controller/   # Servlets
 │   │   │   ├── dao/          # Truy vấn database
 │   │   │   ├── filter/       # AuthenticationFilter
-│   │   │   ├── listener/     # (không dùng) DatabaseInitializer
+│   │   │   ├── listener/     # (Deprecated) DatabaseInitializer
 │   │   │   ├── model/        # POJO
 │   │   │   ├── service/      # Business logic
 │   │   │   └── util/         # DBContext (HikariCP)
@@ -93,7 +93,7 @@ Kanban/
 │   │   │   │   ├── views/    # JSP (được bảo vệ)
 │   │   │   │   └── web.xml
 │   │   │   └── assets/       # CSS, JS, ảnh
-│   │   └── resources/        # (rỗng)
+│   │   └── resources/        # Cấu hình khởi tạo 1 Stub Database.
 │   └── test/                 # Unit & integration tests
 ├── .env.example
 ├── docker-compose.yml
