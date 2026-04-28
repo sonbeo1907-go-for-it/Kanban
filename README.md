@@ -39,4 +39,73 @@ Xây dựng bằng Java thuần (Servlets + JSP), kết nối PostgreSQL, chạy
 ```bash
 git clone https://github.com/sonbeo1907-go-for-it/Kanban.git
 cd Kanban
+```
 
+### 2. Tạo file secret cho database
+Tạo hai file trong cùng thư mục với docker-compose.yml:
+- db_root_password.txt – chứa mật khẩu root của PostgreSQL
+- db_app_password.txt – chứa mật khẩu của user kanban_user
+- 
+### 3. Cấu hình biến môi trường
+Copy .env.example thành .env (nếu chưa có) hoặc sửa trực tiếp.
+
+### 4. Khởi động
+```bash
+docker-compose up -d
+```
+Lần đầu chạy sẽ:
+- Pull image PostgreSQL
+- Khởi tạo database với schema và dữ liệu mẫu (categories, roles)
+- Tự động tạo user kanban_user từ secret
+- Deploy ứng dụng Tomcat
+
+### 5. Truy cập
+- Ứng dụng: http://localhost:8080/user-auth?action=login-page
+- Tài khoản mặc định: admin / admin (được tạo tự động nếu chưa có user nào)
+
+### 6. Dừng và xóa dữ liệu
+```bash
+docker-compose down           # dừng container, giữ dữ liệu
+docker-compose down -v        # dừng và xóa volume (mất toàn bộ dữ liệu)
+```
+
+## Chạy bằng Maven & Tomcat (thủ công)
+```bash
+mvn clean package
+cp target/kanban.war $TOMCAT_HOME/webapps/ROOT.war
+$TOMCAT_HOME/bin/catalina.sh run
+```
+## Cấu Trúc Thư Mục
+```bash
+Kanban/
+├── src/
+│   ├── main/
+│   │   ├── java/com/casestudy/kanban/
+│   │   │   ├── controller/   # Servlets
+│   │   │   ├── dao/          # Truy vấn database
+│   │   │   ├── filter/       # AuthenticationFilter
+│   │   │   ├── listener/     # (không dùng) DatabaseInitializer
+│   │   │   ├── model/        # POJO
+│   │   │   ├── service/      # Business logic
+│   │   │   └── util/         # DBContext (HikariCP)
+│   │   ├── webapp/
+│   │   │   ├── WEB-INF/
+│   │   │   │   ├── views/    # JSP (được bảo vệ)
+│   │   │   │   └── web.xml
+│   │   │   └── assets/       # CSS, JS, ảnh
+│   │   └── resources/        # (rỗng)
+│   └── test/                 # Unit & integration tests
+├── .env.example
+├── docker-compose.yml
+├── Dockerfile
+├── init.sql
+├── pom.xml
+└── README.md
+```
+
+## Chạy Test
+```bash
+mvn clean test
+```
+Các test sử dụng Testcontainers, yêu cầu Docker đang chạy.
+Test sẽ tự động tạo container PostgreSQL tạm thời, chạy script init_test.sql, và dọn dẹp sau khi kết thúc.
