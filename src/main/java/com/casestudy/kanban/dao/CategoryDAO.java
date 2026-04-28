@@ -140,9 +140,15 @@ public class CategoryDAO {
             logger.warn("Category name too long: {}", name);
             return false;
         }
+
+        if (findByName(name) != null) {
+            logger.warn("Category with name '{}' already exists and is not deleted", name);
+            return false;
+        }
+
         String sql = INSERT;
         try (Connection conn = DBContext.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+            PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, name);
             int affected = ps.executeUpdate();
             if (affected > 0) {
