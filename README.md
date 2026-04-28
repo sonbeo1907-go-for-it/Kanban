@@ -113,7 +113,7 @@ Test sẽ tự động tạo container PostgreSQL tạm thời, chạy script in
 
 ## Live Render
 Ứng Dụng Live trên Render: https://kanban-app-latest.onrender.com/
-***Lưu ý:*** Có thời hạn đến hết tháng 5/2026.
+***Lưu ý:*** Phiên bản Live trên Render chỉ có thời hạn đến hết tháng 5/2026.
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
