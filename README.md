@@ -6,7 +6,6 @@ Xây dựng bằng Java thuần (Servlets + JSP), kết nối PostgreSQL, chạy
 ![Java Version](https://img.shields.io/badge/Java-17-blue)
 ![Docker](https://img.shields.io/badge/Docker-✔-blue)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue)
-![License](https://img.shields.io/badge/License-MIT-green)
 
 ## Tính năng chính
 
