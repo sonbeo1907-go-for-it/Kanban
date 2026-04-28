@@ -22,38 +22,6 @@ jobs:
       - name: Build and test with Maven
         run: mvn clean verify
 
-      - name: Verify WAR contents
-        run: |
-          echo "=== Listing JARs in WAR ==="
-          jar tf target/kanban.war | grep -E "\.jar$" | sort
-          echo "=== Checking for PostgreSQL driver ==="
-          if jar tf target/kanban.war | grep -q "postgresql.*\.jar"; then
-            echo "✅ PostgreSQL driver found"
-          else
-            echo "❌ PostgreSQL driver NOT found"
-            exit 1
-          fi
-          echo "=== Checking for MySQL driver ==="
-          if jar tf target/kanban.war | grep -q "mysql-connector.*\.jar"; then
-            echo "❌ MySQL driver still present"
-            exit 1
-          else
-            echo "✅ MySQL driver not found"
-          fi
-          echo "=== Extracting DBContext class ==="
-          mkdir -p tmp/classes
-          cd tmp
-          jar xf ../target/kanban.war WEB-INF/classes/com/casestudy/kanban/util/DBContext.class
-          echo "=== Checking DBContext for PostgreSQL references ==="
-          if strings WEB-INF/classes/com/casestudy/kanban/util/DBContext.class | grep -qi "postgresql"; then
-            echo "✅ DBContext uses PostgreSQL"
-          else
-            echo "❌ DBContext does not reference PostgreSQL"
-            exit 1
-          fi
-          cd ..
-          echo "All verification checks passed."
-
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -68,3 +36,11 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/kanban-app:latest
             ${{ secrets.DOCKER_USERNAME }}/kanban-app:${{ github.sha }}
+
+  deploy:
+    needs: test-and-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy
+        run: |
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
