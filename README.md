@@ -6,6 +6,7 @@ Xây dựng bằng Java thuần (Servlets + JSP), kết nối PostgreSQL, chạy
 ![Java Version](https://img.shields.io/badge/Java-17-blue)
 ![Docker](https://img.shields.io/badge/Docker-✔-blue)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
 
 ## Tính năng chính
 
@@ -109,3 +110,11 @@ mvn clean test
 ```
 Các test sử dụng Testcontainers, yêu cầu Docker đang chạy.
 Test sẽ tự động tạo container PostgreSQL tạm thời, chạy script init_test.sql, và dọn dẹp sau khi kết thúc.
+
+## Live Render
+Ứng Dụng Live trên Render: https://kanban-app-latest.onrender.com/
+***Lưu ý:*** Có thời hạn đến hết tháng 5/2026.
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
