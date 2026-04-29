@@ -59,7 +59,7 @@ GitHub Actions (Workflow)
 
 - Luồng CI sẽ được trigger bởi hành động push code lên nhánh main của repository.
 - Khi CI được trigger, nó sẽ checkout code để bắt đầu thực hiện setup môi trường trong 1 runner ảo có sẵn Docker của GitHub.
-- Maven sẽ thực hiện việc chạy các Unit Test (JUnit 5), và khi chạy Integration Test sẽ tạo 1 cái Testcontainer bên trong Runner của GitHub để chạy PostgresSQL -> tạo một Database THẬT để Test (gần giống production).
+- Maven sẽ thực hiện việc chạy các Unit Test (JUnit 5), và khi chạy Integration Test sẽ tạo 1 cái Testcontainer bên trong Runner của GitHub để chạy PostgresSQL -> tạo một Database ***THẬT*** để Test (gần giống production).
 - Khi các bài test đã pass, cái Testcontainer chứa Postgres sẽ bị kill.
 - Luồng CI sẽ đăng nhập vào DockerHub, sử dựng biến trong secrets của GitHub.
 - Khi đăng nhập xong, nó sẽ build image mới và push lên repository trên DockerHub với tag latest.
