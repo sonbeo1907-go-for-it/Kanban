@@ -1,4 +1,4 @@
-### Local Deployment.
+## Local Deployment.
 
 ```bash
 docker-compose.yml
@@ -18,7 +18,7 @@ docker-compose.yml
 - App Container chứa file WAR sau khi build app và Tomcat, sẽ đọc các biến môi trường (DB_SERVER, DB_USER, DB_PASSWORD) để kết nối với PostgreSQL Container qua JDBC (HikariCP).
 - Ta có thể sự dụng truy cập app qua App Container qua Browser được ánh xạ vào port 8080 của App Container.
 
-### Github Actions and CI/CD.
+## Github Actions and CI/CD.
 
 ```bash
 GitHub Repository
@@ -67,7 +67,7 @@ GitHub Actions (Workflow)
 - Luồng CD sẽ dùng Curl để gửi 1 Post Request lên server của Render Deploy Hook mà App được deploy lên.
 - Render sẽ tự động kéo latest image từ DockerHub để triển khai.
 
-### Render Deployment (Production)
+## Render Deployment (Production)
 ```bash
 Github Actions and CI/CD.
                         │
