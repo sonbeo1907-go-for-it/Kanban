@@ -66,3 +66,20 @@ GitHub Actions (Workflow)
 - Khi mọi hành động đã xong, luồng CD sẽ hoạt động.
 - Luồng CD sẽ dùng Curl để gửi 1 Post Request lên server của Render Deploy Hook mà App được deploy lên.
 - Render sẽ tự động kéo latest image từ DockerHub để triển khai.
+
+### Render Deployment (Production)
+```bash
+Github Actionflow and CI/CD.
+                        │
+                        ▼
+Browser ──https--> Render Web Service ──JDBC+SSL──> Render Managed PostgreSQL ──persistent──> Render Disk
+                         │
+                         └── reads Environment Variables
+```
+
+- Luống CI/CD của GitHub sẽ gửi 1 request lên Render Deploy Hook để triển khai lên Render Web Service.
+- Người dùng kết nối với server qua giao thức https để đảm bảo tính kết nối an toàn (SSL/TLS)
+- Web Service (Tomcat + App) kết nối đến cơ sở dữ liệu PostgreSQL do Render quản lý.
+- Kết nối sử dụng JDBC kèm theo SSL, đảm bảo dữ liệu truyền giữa app và database được mã hóa.
+- Render tự động gán một disk (RenderDisk) cho database để lưu trữ dữ liệu lâu dài (Persistence). Dữ liệu được ghi xuống disk này, đảm bảo không bị mất khi container database khởi động lại.
+- Web Service đọc các biến môi trường (như DB_SERVER, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD) được cấu hình trên Render dashboard. Các biến này cung cấp thông tin kết nối database, credential,...
