@@ -18,5 +18,47 @@ docker-compose.yml
 - App Container chứa file WAR sau khi build app và Tomcat, sẽ đọc các biến môi trường (DB_SERVER, DB_USER, DB_PASSWORD) để kết nối với PostgreSQL Container qua JDBC (HikariCP).
 - Ta có thể sự dụng truy cập app qua App Container qua Browser được ánh xạ vào port 8080 của App Container.
 
-### Github Actionflow and CI.
+### Github Actionflow and CI/CD.
 
+```bash
+GitHub Repository
+       │
+       │ git push (main)
+       ▼
+GitHub Actions (Workflow)
+       │
+       ├──> Checkout code
+       │
+       ├──> Set up JDK 17
+       │
+       ├──> Run Maven clean verify
+       │          │
+       │          ├──> Unit tests (JUnit 5)
+       │          │
+       │          └──> Integration tests (Testcontainers)
+       │                    │
+       │                    └──> Temporary PostgreSQL container (chạy trong CI)
+       │
+       │ (tests passed)
+       ▼
+       ├──> Login to Docker Hub (using secrets)
+       │
+       ├──> Docker build & push
+       │          │
+       │          ├──> kanban-app:latest
+       │          └──> kanban-app:commit-sha
+       │
+       ▼
+       └──> Trigger Render Deploy (via webhook)
+                      │
+                      ▼
+                Render Web Service
+                      │
+                      └──> Pull image:latest & redeploy
+```
+
+- Luồng CI sẽ được trigger bởi hành động push code lên nhánh main của repository.
+- Khi CI được trigger, nó sẽ checkout code để bắt đầu thực hiện setup môi trường trong 1 container ảo của GitHub.
+- Maven sẽ thực hiện việc chạy các Unit Test (JUnit 5), và khi chạy Integration Test sẽ tạo 1 cái Container ảo bên trong Container Ảo của GitHub để chạy PostgresSQL -> tạo mock database.
+- Khi các bài test đã pass, luồng CI sẽ đăng nhập vào docker, sử dựng biến trên môi trường của GitHub.
+- 
