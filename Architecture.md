@@ -18,7 +18,7 @@ docker-compose.yml
 - App Container chứa file WAR sau khi build app và Tomcat, sẽ đọc các biến môi trường (DB_SERVER, DB_USER, DB_PASSWORD) để kết nối với PostgreSQL Container qua JDBC (HikariCP).
 - Ta có thể sự dụng truy cập app qua App Container qua Browser được ánh xạ vào port 8080 của App Container.
 
-### Github Actionflow and CI/CD.
+### Github Actions and CI/CD.
 
 ```bash
 GitHub Repository
@@ -69,7 +69,7 @@ GitHub Actions (Workflow)
 
 ### Render Deployment (Production)
 ```bash
-Github Actionflow and CI/CD.
+Github Actions and CI/CD.
                         │
                         ▼
 Browser ──https--> Render Web Service ──JDBC+SSL──> Render Managed PostgreSQL ──persistent──> Render Disk
